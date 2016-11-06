@@ -6,7 +6,7 @@
 
 ## Installation
 
-    $ go install github.com/mjvm/genpass
+    $ go get -u github.com/mjvm/genpass
 
 ## Usage
 
