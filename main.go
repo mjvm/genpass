@@ -1,10 +1,10 @@
 package main
 
 import (
+	"crypto/rand"
 	"flag"
 	"fmt"
-	"math/rand"
-	"time"
+	"math/big"
 )
 
 type alphabetType uint
@@ -48,10 +48,15 @@ func buildAlphabet(t alphabetType) []rune {
 func genPassword(a []rune, nchars uint) <-chan string {
 	out := make(chan string)
 	go func() {
+		alphabetLeght := big.NewInt(int64(len(a)))
 		for j := 0; j < numberOfPasswords; j++ {
 			var password []rune
 			for i := uint(0); i < nchars; i++ {
-				password = append(password, a[rand.Intn(len(a))])
+				idx, err := rand.Int(rand.Reader, alphabetLeght)
+				if err != nil {
+					panic(err)
+				}
+				password = append(password, a[idx.Int64()])
 			}
 			out <- string(password)
 		}
@@ -63,7 +68,6 @@ func genPassword(a []rune, nchars uint) <-chan string {
 func init() {
 	flag.UintVar(&alpha, "a", 1, "alphabet used to generate the password, options ASCII letters only: 0, ASCII letters and numbers: 1, ASCII letters, numbers and punctuation: 2, numbers only: 3.")
 	flag.UintVar(&nchars, "n", 32, "length of the password")
-	rand.Seed(int64(time.Now().Nanosecond()))
 	flag.Parse()
 }
 
