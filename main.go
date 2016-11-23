@@ -53,7 +53,7 @@ func genPassword(a []rune, nchars uint) <-chan string {
 			for i := uint(0); i < nchars; i++ {
 				password = append(password, a[rand.Intn(len(a))])
 			}
-			out <- fmt.Sprintf("%s", string(password))
+			out <- string(password)
 		}
 		close(out)
 	}()
